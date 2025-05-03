@@ -61,12 +61,13 @@ test("build project with right import map", async () => {
     name.startsWith("assets/shared/shared-lib-"),
   );
   await expect(sharedDependency.code).toMatchFileSnapshot(
-    path.join(buildOutput, sharedDependency.fileName));
+    path.join(buildOutput, sharedDependency.fileName),
+  );
   const expectedImportMap = JSON.stringify({
     imports: {
-      'shared-lib': `./${sharedDependency.fileName}`,
-    }
-  })
+      "shared-lib": `./${sharedDependency.fileName}`,
+    },
+  });
   expect(indexHtml.type).toEqual("asset");
   expect((indexHtml as OutputAsset).source).toContain(
     `<script type="importmap">${expectedImportMap}</script>`,

@@ -65,12 +65,12 @@ export function pluginImportMapsBuildEnv(store: VitePluginImportMapsStore): Plug
       for (const input of inputs) {
         config.build.rollupOptions.input[input.entrypoint] = input.normalizedDependencyName;
       }
-
-      return config;
     },
     // We'll get here the final name of the generated chunk
     // to track the import-maps dependencies
     generateBundle(options, bundle) {
+      store.clearDependencies();
+
       const keys = Object.keys(bundle);
       for (const key of keys) {
         const entry = bundle[key];
