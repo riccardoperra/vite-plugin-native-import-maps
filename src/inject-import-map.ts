@@ -25,6 +25,7 @@ function generateHtmlTransformResult(
   entries.forEach((dep) => {
     imports[dep.packageName] = dep.url;
   });
+
   return {
     html: source,
     tags: [

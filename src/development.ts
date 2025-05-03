@@ -37,7 +37,7 @@ export function pluginImportMapsDevelopmentEnv(
     // Using this hook since we are sure that deps/_metadata.json has been already created
     // and pluginContainer can resolve the right id without duplicating dependencies.
     // Here we will not inject any import map script, but we will track the dependencies into the store
-    async transformIndexHtml(_, { server, bundle }) {
+    async transformIndexHtml(_, { server }) {
       if (!server) return;
       const { pluginContainer, config } = server,
         // This is just an improvement to avoid unnecessary calls to the pluginContainer

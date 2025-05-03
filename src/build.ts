@@ -17,7 +17,7 @@
 import { pluginName } from "./config.js";
 import { errorFactory } from "./utils.js";
 import type { VitePluginImportMapsStore } from "./store.js";
-import type { Plugin } from "vite";
+import type { Plugin, ResolvedConfig } from "vite";
 
 interface ImportMapChunkEntrypoint {
   originalDependencyName: string;
@@ -32,11 +32,10 @@ export function pluginImportMapsBuildEnv(
   const inputs: Array<ImportMapChunkEntrypoint> = [];
   const name = pluginName("build");
   const getError = errorFactory(name);
-
+  let config!: ResolvedConfig;
   return {
     name,
     apply: "build",
-    enforce: "pre",
     config(config) {
       for (const dep of store.sharedDependencies) {
         const normalizedDepName = store.getNormalizedDependencyName(dep);
@@ -48,7 +47,7 @@ export function pluginImportMapsBuildEnv(
           normalizedDependencyName: normalizedDepName,
         });
 
-        inputEntrypointToDependencyMap.set(entrypoint, normalizedDepName);
+        inputEntrypointToDependencyMap.set(entrypoint, dep);
       }
 
       if (!config.build) config.build = {};
@@ -67,12 +66,15 @@ export function pluginImportMapsBuildEnv(
       }
       for (const input of inputs) {
         config.build.rollupOptions.input[input.entrypoint] =
-          input.normalizedDependencyName;
+          input.originalDependencyName;
       }
+    },
+    configResolved(resolvedConfig) {
+      config = resolvedConfig;
     },
     // We'll get here the final name of the generated chunk
     // to track the import-maps dependencies
-    generateBundle(options, bundle) {
+    generateBundle(_, bundle) {
       store.clearDependencies();
 
       const keys = Object.keys(bundle);
@@ -83,9 +85,15 @@ export function pluginImportMapsBuildEnv(
         if (inputEntrypointToDependencyMap.has(entry.name)) {
           const entryPath = inputEntrypointToDependencyMap.get(entry.name);
           if (entryPath) {
+            const packageName = entryPath;
+            const url = "./" + entry.fileName;
             store.addDependency({
-              url: "./" + entry.fileName,
-              packageName: entryPath,
+              url,
+              packageName,
+            });
+
+            config.logger.info(`[${name}] Added ${packageName}: ${url}`, {
+              timestamp: true,
             });
           }
         }

@@ -21,7 +21,7 @@ import { pluginImportMapsDevelopmentEnv } from "./development.js";
 import type { VitePluginImportMapsConfig } from "./config.js";
 import type { Plugin } from "vite";
 
-export function vitePluginImportMaps(
+export function vitePluginNativeImportMaps(
   options: VitePluginImportMapsConfig,
 ): Array<Plugin> {
   const plugins: Array<Plugin> = [];
