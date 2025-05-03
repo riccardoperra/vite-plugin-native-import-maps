@@ -35,25 +35,28 @@ pnpm add -D vite-plugin-native-import-maps
 yarn add -D vite-plugin-native-import-maps
 ```
 
+## Usage
+
 ```ts
-import {defineConfig} from 'vite'
-import {vitePluginImportMaps} from 'vite-plugin-native-import-maps'
+import { defineConfig } from "vite";
+import { vitePluginImportMaps } from "vite-plugin-native-import-maps";
 
 export default defineConfig({
-    plugins: [
-        vitePluginImportMaps({
-            shared: ['react', 'react-dom'],
-            // optional settings
-            sharedOutDir: 'shared', // default: 'shared'
-            log: true               // default: false
-        })
-    ]
-})
+  plugins: [
+    vitePluginImportMaps({
+      shared: ["react", "react-dom"],
+      // optional settings
+      sharedOutDir: "shared", // default: 'shared'
+      log: true, // default: false
+    }),
+  ],
+});
 ```
 
 ## Do you need this plugin?
 
-If you searched for import maps, you probably are working in a Micro-frontend environment or a plugin system, where you need
+If you searched for import maps, you probably are working in a Micro-frontend environment or a plugin system, where you
+need
 to share dependencies between different applications or even load unbundled modules at runtime.
 
 Even if [@module-federation/vite](https://github.com/module-federation/vite) plugin exists, you may not
@@ -65,15 +68,13 @@ Thanks to browser native import-maps, you can control how modules are resolved i
 At the same time, you don't necessarily want to use bind all your modules to services like esm.sh or jspm,
 because they force you to download those packages and all their dependencies from their network.
 
-This plugin just exposes via import maps the modules you defined inside the plugin configuration, while 
+This plugin just exposes via import maps the modules you defined inside the plugin configuration, while
 assuring your host application too is using the same chunks in both development and production.
-
-## Usage
 
 ## Configuration
 
 | Option         | Type       | Default    | Description                                       |
-|----------------|------------|------------|---------------------------------------------------|
+| -------------- | ---------- | ---------- | ------------------------------------------------- |
 | `shared`       | `string[]` | Required   | List of dependencies to be shared via import maps |
 | `sharedOutDir` | `string`   | `'shared'` | Directory where shared chunks are stored          |
 | `log`          | `boolean`  | `false`    | Enable logging                                    |
@@ -91,8 +92,8 @@ In development, the plugin collects the shared dependencies via the vite dev ser
 which maps them in that way:
 
 - For node_modules libraries, it points to `/node_modules/.vite/deps` folder.
-    - If the library is not in the root, it adds a `/@fs/` prefix.
-    - Dependencies have a `?v=BROWSER_HASH` suffix that will change on every server reload.
+  - If the library is not in the root, it adds a `/@fs/` prefix.
+  - Dependencies have a `?v=BROWSER_HASH` suffix that will change on every server reload.
 - For local files defined with `alias`, it just uses the path name
 
 In production, it adds a new `input` to the rollup `inputOptions` for each defined shared dependency to
