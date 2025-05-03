@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,8 +17,13 @@
   "packageManager": "pnpm@10.9.0",
   "devDependencies": {
     "@tanstack/eslint-config": "^0.1.0",
+    "@types/node": "^22.15.3",
     "prettier": "^3.5.3",
+    "rollup": "^4.40.1",
     "tsdown": "0.11.0-beta.2",
-    "vite": "^6.3.4"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.4",
+    "vite-node": "^3.1.2",
+    "vitest": "^3.1.2"
   }
 }

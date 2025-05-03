@@ -23,7 +23,7 @@ import type { OutputAsset, RollupOutput } from "rollup";
 test("build project with right import map", async () => {
   const buildOutput = path.resolve(
     import.meta.dirname,
-    "dist/build-project-with-right-import-maps",
+    "__snapshot__/build-project-with-right-import-maps",
   );
 
   const root = path.resolve(path.join(import.meta.dirname, "./fixture/basic"));
