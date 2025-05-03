@@ -1,0 +1,23 @@
+{
+  "name": "vite-plugin-import-maps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Riccardo Perra",
+    "email": "riccardo.perra@icloud.com",
+    "url": "https://github.com/riccardoperra"
+  },
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.9.0",
+  "devDependencies": {
+    "@tanstack/eslint-config": "^0.1.0",
+    "prettier": "^3.5.3",
+    "tsdown": "0.11.0-beta.2",
+    "vite": "^6.3.4"
+  }
+}
