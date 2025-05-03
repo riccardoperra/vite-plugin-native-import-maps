@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-import-maps",
+  "name": "vite-plugin-native-import-maps",
   "version": "0.0.1",
   "description": "A Vite plugin that manages import maps for shared dependencies in your Vite applications.",
   "main": "index.js",
