@@ -26,14 +26,20 @@ export interface RegisteredDependency {
 export class VitePluginImportMapsStore {
   readonly sharedDependencies: readonly string[] = [];
   readonly sharedOutDir: string = "shared";
+  readonly log: boolean;
 
   readonly importMapDependencies = new Map<string, RegisteredDependency>();
 
   constructor(options: VitePluginImportMapsConfig) {
     this.sharedDependencies = [...new Set<string>(options.shared)];
+    this.log = options.log || false;
     if (options.sharedOutDir) {
       this.sharedOutDir = options.sharedOutDir;
     }
+  }
+
+  clearDependencies(): void {
+    this.importMapDependencies.clear();
   }
 
   addDependency(dependency: RegisteredDependency): void {

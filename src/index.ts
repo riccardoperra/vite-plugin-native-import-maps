@@ -19,6 +19,7 @@ import type { VitePluginImportMapsConfig } from "./config.js";
 import { VitePluginImportMapsStore } from "./store.js";
 import { pluginImportMapsBuildEnv } from "./build.js";
 import { pluginImportMapsInject } from "./inject-import-map.js";
+import { pluginImportMapsDevelopmentEnv } from "./development.js";
 
 export function vitePluginImportMaps(
   options: VitePluginImportMapsConfig,
@@ -28,6 +29,7 @@ export function vitePluginImportMaps(
   const store = new VitePluginImportMapsStore(options);
 
   plugins.push(pluginImportMapsBuildEnv(store));
+  plugins.push(pluginImportMapsDevelopmentEnv(store))
   plugins.push(pluginImportMapsInject(store));
 
   return plugins;

@@ -33,4 +33,8 @@ export interface VitePluginImportMapsConfig {
    * @default "shared"
    */
   sharedOutDir?: string;
+  /**
+   * Enable logging
+   */
+  log?: boolean;
 }

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import path from "node:path";
+import { normalizePath } from "vite";
+
 /**
  * Normalize a dependency name to be used as an entrypoint input
  *
@@ -33,4 +36,22 @@ export function getError(name: string, message: string) {
 
 export function errorFactory(path: string) {
   return (message: string) => getError(path, message);
+}
+
+/**
+ * Prefix for resolved fs paths, since windows paths may not be valid as URLs.
+ *
+ * @see https://github.com/vitejs/vite/blob/fd38d076fe2455aac1e00a7b15cd51159bf12bb5/packages/vite/src/node/constants.ts#L108
+ */
+export const FS_PREFIX = `/@fs/`
+
+
+export function fileToUrl(file: string, root: string) {
+  const url = path.relative(root, file)
+  // out of root, use /@fs/ prefix
+  if (url[0] === '.') {
+    return path.posix.join(FS_PREFIX, normalizePath(file))
+  }
+  // file within root, create root-relative url
+  return '/' + normalizePath(url)
 }
