@@ -17,7 +17,14 @@
     "ci:publish": "changeset publish",
     "ci:version": "changeset version"
   },
-  "keywords": [],
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "import-maps",
+    "mfe",
+    "microfrontend",
+    "plugin"
+  ],
   "author": {
     "name": "Riccardo Perra",
     "email": "riccardo.perra@icloud.com",
