@@ -1,6 +1,10 @@
 # vite-plugin-import-maps
 
-A vite plugin that automatically manages [https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap](native import maps) in your
+> [!IMPORTANT]
+> 
+> This package has not been published yet to the npm registry.
+
+A vite plugin that automatically manages [native import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) in your
 host vite application.
 
 ## Features
