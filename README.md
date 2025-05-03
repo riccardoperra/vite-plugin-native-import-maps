@@ -5,14 +5,13 @@ manages [native import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/R
 in your
 host vite application.
 
-Works in both development and production builds, assuring that the defined imports in an import-map are 
+Works in both development and production builds, assuring that the defined imports in an import-map are
 always pointing to an existing chunk of your application, avoiding duplicating instances.
 
 ## Table of contents
 
-- [Features](#features)
-- [Installation](#installation)
 - [Do you need this plugin?](#do-you-need-this-plugin)
+- [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [How the heck does this plugin work?](#how-the-heck-does-this-plugin-work)
@@ -79,19 +78,23 @@ export default defineConfig({
 ## How the heck does this plugin work?
 
 This plugin works by creating an import map for your defined dependencies and injecting it into your HTML.
-It works in both development and production builds, assuring that the defined imports are always
-pointing to the correct version of the dependency.
+It works in both development and production builds, assuring that the defined imports always
+point to the correct chunk of the module.
 
 Since Vite uses two different bundlers (esbuild for development and Rollup for production),
 the plugin implementation differs slightly between the two.
 
+### Development
+
 In development, the plugin collects the shared dependencies via the vite dev server,
 which maps them in that way:
 
-- For node_modules libraries, it points to `/node_modules/.vite/deps` folder.
-    - If the library is not in the root, it adds a `/@fs/` prefix.
-    - Dependencies have a `?v=BROWSER_HASH` suffix that will change on every server reload.
-- For local files defined with `alias`, it just uses the path name
+- node_modules libraries points to `/node_modules/.vite/deps` folder.
+- If the module is not within the root, the path will be absolute and prefixed with `/@fs/`.
+- Module paths will have a `?v=${browser_hash}` suffix that will change on every server reload.
+- Local files defined with `alias` just point with the relative path.
+
+### Production build
 
 In production, it adds a new `input` to the rollup `inputOptions` for each defined shared dependency to
 create a new separated chunk which will contain all the module exports (they will not be tree-shaken).
@@ -100,3 +103,9 @@ During the generate bundle phase, it will then collect all resolved urls and add
 You can view a real example output in the test folder.
 
 - [Basic test](./test/fixture/basic) and [snapshot result](./test/__snapshot__/build-project-with-right-import-maps)
+
+## Examples
+
+- [solidjs-host](./examples/solidjs-host/src/App.tsx)
+- [solidjs-remote-counter](./examples/solidjs-host)
+
