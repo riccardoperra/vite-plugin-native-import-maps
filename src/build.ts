@@ -76,8 +76,8 @@ export function pluginImportMapsBuildEnv(store: VitePluginImportMapsStore): Plug
         const entry = bundle[key];
         if (entry.type !== 'chunk') continue;
 
-        if (inputEntrypointToDependencyMap.has(entry.fileName)) {
-          const entryPath = inputEntrypointToDependencyMap.get(entry.fileName);
+        if (inputEntrypointToDependencyMap.has(entry.name)) {
+          const entryPath = inputEntrypointToDependencyMap.get(entry.name);
           if (entryPath) {
             store.addDependency({
               url: './' + entry.fileName,
