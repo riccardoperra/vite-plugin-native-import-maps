@@ -14,42 +14,18 @@
  * limitations under the License.
  */
 
+import path from "node:path";
 import { expect, test } from "vitest";
 import { build } from "vite";
-import { vitePluginImportMaps } from "../src/index.js";
-import path from "node:path";
 import type { OutputAsset, RollupOutput } from "rollup";
 
 test("build project with right import map", async () => {
-  const buildOutput = path.resolve(
-    import.meta.dirname,
-    "__snapshot__/build-project-with-right-import-maps",
+  const { default: config } = await import(
+    "./fixture/basic/vite.config-test.js"
   );
+  const buildOutput = config.build.outDir;
 
-  const root = path.resolve(path.join(import.meta.dirname, "./fixture/basic"));
-
-  const result = (await build({
-    root,
-    resolve: {
-      alias: {
-        "shared-lib": path.resolve(path.join(root, "shared-lib.ts")),
-      },
-    },
-    build: {
-      outDir: buildOutput,
-      minify: false,
-      rollupOptions: {
-        input: {
-          index: path.resolve(path.join(root, "./index.html")),
-        },
-      },
-    },
-    plugins: [
-      vitePluginImportMaps({
-        shared: ["shared-lib"],
-      }),
-    ],
-  })) as RollupOutput;
+  const result = (await build(config)) as RollupOutput;
 
   expect(result.output).toHaveLength(2);
   const [sharedDependency, indexHtml] = result.output;

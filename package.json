@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "vitest",
+    "test": "vitest --config ./vitest.config.ts",
     "build": "tsdown",
     "ci:publish": "changeset publish",
     "ci:version": "changeset version"

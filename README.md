@@ -99,3 +99,6 @@ which maps them in that way:
 In production, it adds a new `input` to the rollup `inputOptions` for each defined shared dependency to
 create a new separated chunk which will contain all the module exports (they will not be tree-shaken).
 During the generate bundle phase, it will then collect all resolved urls and add them into the import map.
+
+You can view a real example output in the test folder.
+- [Basic test](./test/fixture/basic) and [snapshot result](./test/__snapshot__/build-project-with-right-import-maps)
