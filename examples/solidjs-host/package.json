@@ -1,0 +1,22 @@
+{
+  "name": "solidjs-host",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "prebuild": "pnpm --filter=solidjs-remote-counter build",
+    "dev": "pnpm prebuild && vite",
+    "build": "pnpm prebuild && tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "solid-js": "^1.9.5",
+    "statebuilder": "^0.8.0",
+    "vite-plugin-static-copy": "^2.3.1"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1",
+    "vite-plugin-solid": "^2.11.6"
+  }
+}
