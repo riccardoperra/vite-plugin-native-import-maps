@@ -25,7 +25,7 @@ export interface RegisteredDependency {
 
 export class VitePluginImportMapsStore {
   readonly sharedDependencies: ReadonlyArray<string> = [];
-  readonly sharedOutDir: string = "shared";
+  readonly sharedOutDir: string = "";
   readonly log: boolean;
 
   readonly importMapDependencies: Map<string, RegisteredDependency> = new Map();

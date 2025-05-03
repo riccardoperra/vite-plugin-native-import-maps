@@ -5,6 +5,9 @@ manages [native import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/R
 in your
 host vite application.
 
+Works in both development and production builds, assuring that the defined imports in an import-map are 
+always pointing to an existing chunk of your application, avoiding duplicating instances.
+
 ## Table of contents
 
 - [Features](#features)
@@ -14,28 +17,24 @@ host vite application.
 - [Configuration](#configuration)
 - [How the heck does this plugin work?](#how-the-heck-does-this-plugin-work)
 
-## Features
-
-
-- ✅ A plugin that works in both development and production build
-- ✅ Automatically creates import maps with the exposed dependencies, reusing the application chunks
-- ✅ Injects the appropriate import map into your HTML
-
 ## Do you need this plugin?
 
-If you have searched for import maps, you probably are working in a micro-frontend architecture or an application with a plugin system, where you
+If you have searched for import maps, you probably are working in a micro-frontend architecture or an application with a
+plugin system, where you
 need to share some dependencies between different modules at runtime.
 
 While @module-federation/vite offers a full-featured module federation system, it may not always be necessary.
 
 Native import maps allow the browser to resolve modules directly, giving you control over dependency management.
-This means that you can build your external modules independently **without forcing you to use any specific bundler / plugin**,
+This means that you can build your external modules independently **without forcing you to use any specific bundler /
+plugin**,
 aside from writing ES Modules and externalizing those dependencies if you want to reuse the same chunks.
 
-At the same time, relying on services like [esm.sh] or [jspm.io] can be limiting, since they require downloading packages (and their entire dependency trees)
+At the same time, relying on services like [esm.sh] or [jspm.io] can be limiting, since they require downloading
+packages (and their entire dependency trees)
 from their own networks, which might not align with your expectations.
 
-This plugin directly integrates into vite build system, so it just exposed via import maps the modules you defined in 
+This plugin directly integrates into vite build system, so it just exposed via import maps the modules you defined in
 configuration, while assuring your host application is using those chunks instead of duplicating them.
 
 You can check a more detailed explanation in the [below paragraph](#how-the-heck-does-this-plugin-work),
@@ -71,11 +70,11 @@ export default defineConfig({
 
 ## Configuration
 
-| Option         | Type       | Default    | Description                                       |
-|----------------|------------|------------|---------------------------------------------------|
-| `shared`       | `string[]` | Required   | List of dependencies to be shared via import maps |
-| `sharedOutDir` | `string`   | `'shared'` | Directory where shared chunks are stored          |
-| `log`          | `boolean`  | `false`    | Enable logging                                    |
+| Option         | Type       | Default | Description                                        |
+|----------------|------------|---------|----------------------------------------------------|
+| `shared`       | `string[]` |         | List of dependencies to be exposed via import maps |
+| `sharedOutDir` | `string`   | `''`    | Directory where shared chunks will be emitted      |
+| `log`          | `boolean`  | `false` | Enable some logs for debugging purposes            |
 
 ## How the heck does this plugin work?
 
