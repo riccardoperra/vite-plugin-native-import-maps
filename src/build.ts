@@ -69,9 +69,6 @@ export function pluginImportMapsBuildEnv(
         config.build.rollupOptions.input[input.entrypoint] =
           input.normalizedDependencyName;
       }
-      },
-    configResolved(config) {
-      // console.log(config);
     },
     // We'll get here the final name of the generated chunk
     // to track the import-maps dependencies
