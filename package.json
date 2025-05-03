@@ -1,12 +1,14 @@
 {
   "name": "vite-plugin-import-maps",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "build": "tsdown"
+    "build": "tsdown",
+    "ci:publish": "changeset publish",
+    "ci:version": "changeset version"
   },
   "keywords": [],
   "author": {
