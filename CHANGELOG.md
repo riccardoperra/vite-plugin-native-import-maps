@@ -1,5 +1,11 @@
 # vite-plugin-native-import-maps
 
+## 0.0.3
+
+### Patch Changes
+
+- add repository information to npm
+
 ## 0.0.2
 
 ### Patch Changes
