@@ -69,10 +69,7 @@ export function pluginImportMapsBuildEnv(
         config.build.rollupOptions.input[input.entrypoint] =
           input.normalizedDependencyName;
       }
-
-      config.build.rollupOptions.input["__virtual_shared"] =
-        "virtual:import-maps-shared-deps";
-    },
+      },
     configResolved(config) {
       // console.log(config);
     },
