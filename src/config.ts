@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-import type {Plugin} from 'vite';
-import type { VitePluginImportMapsConfig } from "./config.js";
-import { VitePluginImportMapsStore } from "./store.js";
-import { pluginImportMapsBuildEnv } from "./build.js";
+export const PLUGIN_NAME = "vite-plugin-import-maps";
 
-export function vitePluginImportMaps(options: VitePluginImportMapsConfig): Plugin[] {
-    const plugins: Plugin[] = [];
+export function pluginName(name: string) {
+  return `${PLUGIN_NAME}:${name}`;
+}
 
-    const store = new VitePluginImportMapsStore(options);
+export type SharedDependencyConfig = string[];
 
-    plugins.push(pluginImportMapsBuildEnv(store))
-
-    return plugins;
+export interface VitePluginImportMapsConfig {
+  /**
+   * Dependencies shared by modules
+   */
+  shared: SharedDependencyConfig;
+  /**
+   * Directory where the shared chunks are stored
+   *
+   * @default "shared"
+   */
+  sharedOutDir?: string;
 }

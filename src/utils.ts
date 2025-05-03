@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-import type {Plugin} from 'vite';
-import type { VitePluginImportMapsConfig } from "./config.js";
-import { VitePluginImportMapsStore } from "./store.js";
-import { pluginImportMapsBuildEnv } from "./build.js";
+/**
+ * Normalize a dependency name to be used as an entrypoint input
+ *
+ * @example
+ * ```
+ * @scope/package-name -> @scope_package-name
+ * package-name/sub-entrypoint -> package-name_sub-entrypoint
+ * ```
+ */
+export function normalizeDependencyName(dep: string) {
+  return dep.replace(/\//g, "_");
+}
 
-export function vitePluginImportMaps(options: VitePluginImportMapsConfig): Plugin[] {
-    const plugins: Plugin[] = [];
+export function getError(name: string, message: string) {
+  return new Error(`[vite-plugin-import-maps${name ? ':' + name : ''}] ${message}`);
+}
 
-    const store = new VitePluginImportMapsStore(options);
-
-    plugins.push(pluginImportMapsBuildEnv(store))
-
-    return plugins;
+export function errorFactory(path: string) {
+  return (message: string) => getError(path, message);
 }
