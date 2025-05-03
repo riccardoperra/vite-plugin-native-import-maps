@@ -25,17 +25,18 @@ interface ImportMapChunkEntrypoint {
   entrypoint: string;
 }
 
-export function pluginImportMapsBuildEnv(store: VitePluginImportMapsStore): Plugin {
+export function pluginImportMapsBuildEnv(
+  store: VitePluginImportMapsStore,
+): Plugin {
   const inputEntrypointToDependencyMap = new Map<string, string>();
   const inputs: Array<ImportMapChunkEntrypoint> = [];
-  const name = pluginName('build');
+  const name = pluginName("build");
   const getError = errorFactory(name);
-
 
   return {
     name,
-    apply: 'build',
-    enforce: 'pre',
+    apply: "build",
+    enforce: "pre",
     config(config) {
       for (const dep of store.sharedDependencies) {
         const normalizedDepName = store.getNormalizedDependencyName(dep);
@@ -44,27 +45,36 @@ export function pluginImportMapsBuildEnv(store: VitePluginImportMapsStore): Plug
         inputs.push({
           originalDependencyName: dep,
           entrypoint,
-          normalizedDependencyName: normalizedDepName
-        })
+          normalizedDependencyName: normalizedDepName,
+        });
 
         inputEntrypointToDependencyMap.set(entrypoint, normalizedDepName);
       }
 
+      if (!config.build) config.build = {};
+      if (!config.build.rollupOptions) config.build.rollupOptions = {};
+      if (!config.build.rollupOptions.input)
+        config.build.rollupOptions.input = {};
 
-      if (!config.build) config.build = {}
-      if (!config.build.rollupOptions) config.build.rollupOptions = {}
-      if (!config.build.rollupOptions.input) config.build.rollupOptions.input = {}
-
-      config.build.rollupOptions.preserveEntrySignatures = 'strict';
+      config.build.rollupOptions.preserveEntrySignatures = "strict";
 
       // Currently supporting only input options as an object
-      if (typeof config.build.rollupOptions.input === 'string'
-        || Array.isArray(config.build.rollupOptions.input)) {
-       throw getError('Input options must be an object')
+      if (
+        typeof config.build.rollupOptions.input === "string" ||
+        Array.isArray(config.build.rollupOptions.input)
+      ) {
+        throw getError("Input options must be an object");
       }
       for (const input of inputs) {
-        config.build.rollupOptions.input[input.entrypoint] = input.normalizedDependencyName;
+        config.build.rollupOptions.input[input.entrypoint] =
+          input.normalizedDependencyName;
       }
+
+      config.build.rollupOptions.input["__virtual_shared"] =
+        "virtual:import-maps-shared-deps";
+    },
+    configResolved(config) {
+      // console.log(config);
     },
     // We'll get here the final name of the generated chunk
     // to track the import-maps dependencies
@@ -74,18 +84,18 @@ export function pluginImportMapsBuildEnv(store: VitePluginImportMapsStore): Plug
       const keys = Object.keys(bundle);
       for (const key of keys) {
         const entry = bundle[key];
-        if (entry.type !== 'chunk') continue;
+        if (entry.type !== "chunk") continue;
 
         if (inputEntrypointToDependencyMap.has(entry.name)) {
           const entryPath = inputEntrypointToDependencyMap.get(entry.name);
           if (entryPath) {
             store.addDependency({
-              url: './' + entry.fileName,
+              url: "./" + entry.fileName,
               packageName: entryPath,
             });
           }
         }
       }
-    }
-  }
+    },
+  };
 }

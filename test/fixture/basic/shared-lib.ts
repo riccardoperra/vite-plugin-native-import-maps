@@ -15,12 +15,12 @@
  */
 
 export function foo() {
-  return 'test'
+  return "test";
 }
 
-export const bar = 'bar';
+export const bar = "bar";
 
 export default {
   foo,
-  bar
-}
+  bar,
+};

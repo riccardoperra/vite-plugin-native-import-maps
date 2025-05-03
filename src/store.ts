@@ -15,7 +15,7 @@
  */
 
 import path from "node:path";
-import {normalizeDependencyName} from "./utils.js";
+import { normalizeDependencyName } from "./utils.js";
 import type { VitePluginImportMapsConfig } from "./config.js";
 
 export interface RegisteredDependency {

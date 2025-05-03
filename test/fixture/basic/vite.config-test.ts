@@ -45,7 +45,7 @@ export default {
   plugins: [
     vitePluginImportMaps({
       shared: ["shared-lib"],
-      sharedOutDir: '@import-maps'
+      sharedOutDir: "@import-maps",
     }),
   ],
 } satisfies UserConfig;

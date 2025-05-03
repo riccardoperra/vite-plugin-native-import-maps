@@ -29,7 +29,7 @@ export function vitePluginImportMaps(
   const store = new VitePluginImportMapsStore(options);
 
   plugins.push(pluginImportMapsBuildEnv(store));
-  plugins.push(pluginImportMapsDevelopmentEnv(store))
+  plugins.push(pluginImportMapsDevelopmentEnv(store));
   plugins.push(pluginImportMapsInject(store));
 
   return plugins;

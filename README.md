@@ -101,4 +101,5 @@ create a new separated chunk which will contain all the module exports (they wil
 During the generate bundle phase, it will then collect all resolved urls and add them into the import map.
 
 You can view a real example output in the test folder.
+
 - [Basic test](./test/fixture/basic) and [snapshot result](./test/__snapshot__/build-project-with-right-import-maps)
