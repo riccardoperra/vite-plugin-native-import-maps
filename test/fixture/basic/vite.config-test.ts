@@ -28,6 +28,7 @@ const buildOutput = path.resolve(
 export default {
   root,
   resolve: {
+    // This is needed to resolve a file like a library
     alias: {
       "shared-lib": path.resolve(path.join(root, "shared-lib.ts")),
     },
@@ -44,6 +45,7 @@ export default {
   plugins: [
     vitePluginImportMaps({
       shared: ["shared-lib"],
+      sharedOutDir: '@import-maps'
     }),
   ],
 } satisfies UserConfig;
