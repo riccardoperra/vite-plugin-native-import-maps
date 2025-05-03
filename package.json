@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-import-maps",
   "version": "0.0.1",
-  "description": "",
+  "description": "A Vite plugin that manages import maps for shared dependencies in your Vite applications.",
   "main": "index.js",
   "type": "module",
   "scripts": {
