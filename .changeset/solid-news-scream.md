@@ -1,5 +1,5 @@
 ---
-"vite-plugin-native-import-maps": minor
+"vite-plugin-native-import-maps": patch
 ---
 
 First release

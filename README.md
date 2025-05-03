@@ -1,7 +1,7 @@
 # vite-plugin-native-import-maps
 
 A vite plugin that automatically
-manages [native import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)
+manages browser [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)
 in your
 host vite application.
 
@@ -14,27 +14,31 @@ always pointing to an existing chunk of your application, avoiding duplicating i
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [How the heck does this plugin work?](#how-the-heck-does-this-plugin-work)
+- [How does this plugin work?](#how-does-this-plugin-work)
 
 ## Do you need this plugin?
 
-If you have searched for import maps, you probably are working in a micro-frontend architecture or an application with a
-plugin system, where you
-need to share some dependencies between different modules at runtime.
+If you wanted to
+use [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap),
+you're likely working with a micro-frontend architecture or an application that uses a plugin system,
+where sharing dependencies between different modules at runtime is essential.
 
-While @module-federation/vite offers a full-featured module federation system, it may not always be necessary.
+While @module-federation/vite offers a full-featured module federation system, it may be a bloated solution for your
+problem.
 
 Native import maps allow the browser to resolve modules directly, giving you control over dependency management.
-This means that you can build your external modules independently **without forcing you to use any specific bundler /
-plugin**,
-aside from writing ES Modules and externalizing those dependencies if you want to reuse the same chunks.
+This means that you can build your external modules independently **without forcing to use any specific bundler or
+plugin**
+to integrate them (e.g., module federation plugins).
+You only need to write ES Modules that actually import those dependencies if you want to reuse the same chunks.
 
 At the same time, relying on services like [esm.sh] or [jspm.io] can be limiting, since they require downloading
 packages (and their entire dependency trees)
 from their own networks, which might not align with your expectations.
 
-This plugin directly integrates into vite build system, so it just exposed via import maps the modules you defined in
-configuration, while assuring your host application is using those chunks instead of duplicating them.
+This plugin directly integrates into the vite build system, so it just exposed via import maps the modules you defined
+in configuration, while assuring even your host application uses those chunks. This avoids duplicating
+instances of the same library in your application, which is a common problem when using micro-frontend architectures.
 
 You can check a more detailed explanation in the [below paragraph](#how-the-heck-does-this-plugin-work),
 
@@ -75,7 +79,7 @@ export default defineConfig({
 | `sharedOutDir` | `string`   | `''`    | Directory where shared chunks will be emitted      |
 | `log`          | `boolean`  | `false` | Enable some logs for debugging purposes            |
 
-## How the heck does this plugin work?
+## How does this plugin work?
 
 This plugin works by creating an import map for your defined dependencies and injecting it into your HTML.
 It works in both development and production builds, assuring that the defined imports always
