@@ -20,7 +20,7 @@ export function pluginName(name: string) {
   return `${PLUGIN_NAME}:${name}`;
 }
 
-export type SharedDependencyConfig = string[];
+export type SharedDependencyConfig = Array<string>;
 
 export interface VitePluginImportMapsConfig {
   /**

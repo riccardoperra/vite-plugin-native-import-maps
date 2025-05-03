@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import type { VitePluginImportMapsStore } from "./store.js";
 import { pluginName } from "./config.js";
-import type { Plugin } from "vite";
 import { errorFactory } from "./utils.js";
+import type { VitePluginImportMapsStore } from "./store.js";
+import type { Plugin } from "vite";
 
 interface ImportMapChunkEntrypoint {
   originalDependencyName: string;
@@ -27,7 +27,7 @@ interface ImportMapChunkEntrypoint {
 
 export function pluginImportMapsBuildEnv(store: VitePluginImportMapsStore): Plugin {
   const inputEntrypointToDependencyMap = new Map<string, string>();
-  const inputs: ImportMapChunkEntrypoint[] = [];
+  const inputs: Array<ImportMapChunkEntrypoint> = [];
   const name = pluginName('build');
   const getError = errorFactory(name);
 

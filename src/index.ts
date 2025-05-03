@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import type { Plugin } from "vite";
-import type { VitePluginImportMapsConfig } from "./config.js";
 import { VitePluginImportMapsStore } from "./store.js";
 import { pluginImportMapsBuildEnv } from "./build.js";
 import { pluginImportMapsInject } from "./inject-import-map.js";
 import { pluginImportMapsDevelopmentEnv } from "./development.js";
+import type { VitePluginImportMapsConfig } from "./config.js";
+import type { Plugin } from "vite";
 
 export function vitePluginImportMaps(
   options: VitePluginImportMapsConfig,
-): Plugin[] {
-  const plugins: Plugin[] = [];
+): Array<Plugin> {
+  const plugins: Array<Plugin> = [];
 
   const store = new VitePluginImportMapsStore(options);
 

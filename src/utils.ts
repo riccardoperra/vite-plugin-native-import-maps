@@ -26,16 +26,18 @@ import { normalizePath } from "vite";
  * package-name/sub-entrypoint -> package-name_sub-entrypoint
  * ```
  */
-export function normalizeDependencyName(dep: string) {
+export function normalizeDependencyName(dep: string): string {
   return dep.replace(/\//g, "_");
 }
 
-export function getError(name: string, message: string) {
-  return new Error(`[vite-plugin-import-maps${name ? ':' + name : ''}] ${message}`);
+export function getError(name: string, message: string): Error {
+  return new Error(
+    `[vite-plugin-import-maps${name ? ":" + name : ""}] ${message}`,
+  );
 }
 
-export function errorFactory(path: string) {
-  return (message: string) => getError(path, message);
+export function errorFactory(prefix: string): (message: string) => Error {
+  return (message) => getError(prefix, message);
 }
 
 /**
@@ -43,15 +45,14 @@ export function errorFactory(path: string) {
  *
  * @see https://github.com/vitejs/vite/blob/fd38d076fe2455aac1e00a7b15cd51159bf12bb5/packages/vite/src/node/constants.ts#L108
  */
-export const FS_PREFIX = `/@fs/`
+export const FS_PREFIX = `/@fs/`;
 
-
-export function fileToUrl(file: string, root: string) {
-  const url = path.relative(root, file)
+export function fileToUrl(file: string, root: string): string {
+  const url = path.relative(root, file);
   // out of root, use /@fs/ prefix
-  if (url[0] === '.') {
-    return path.posix.join(FS_PREFIX, normalizePath(file))
+  if (url[0] === ".") {
+    return path.posix.join(FS_PREFIX, normalizePath(file));
   }
   // file within root, create root-relative url
-  return '/' + normalizePath(url)
+  return "/" + normalizePath(url);
 }

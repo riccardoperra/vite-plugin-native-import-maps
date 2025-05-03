@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { DevEnvironment, type Plugin } from "vite";
 import { pluginName } from "./config.js";
-import type { VitePluginImportMapsStore } from "./store.js";
 import { fileToUrl } from "./utils.js";
+import type { Plugin } from "vite";
+import type { VitePluginImportMapsStore } from "./store.js";
 
 interface DevResolvedModule {
   name: string;
@@ -29,7 +29,7 @@ export function pluginImportMapsDevelopmentEnv(
 ): Plugin {
   const name = pluginName("development");
   let latestBrowserHash: string | undefined = undefined;
-  let cachedResolvedModules: DevResolvedModule[] = [];
+  let cachedResolvedModules: Array<DevResolvedModule> = [];
 
   return {
     name,
@@ -47,7 +47,7 @@ export function pluginImportMapsDevelopmentEnv(
         clientEnvironment = server.environments["client"],
         devOptimizer = clientEnvironment.depsOptimizer!;
 
-      let resolvedModules: DevResolvedModule[];
+      let resolvedModules: Array<DevResolvedModule>;
 
       if (devOptimizer.metadata.browserHash === latestBrowserHash) {
         resolvedModules = cachedResolvedModules;

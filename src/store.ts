@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import type { VitePluginImportMapsConfig } from "./config.js";
 import path from "node:path";
 import {normalizeDependencyName} from "./utils.js";
+import type { VitePluginImportMapsConfig } from "./config.js";
 
 export interface RegisteredDependency {
   packageName: string;
@@ -24,11 +24,11 @@ export interface RegisteredDependency {
 }
 
 export class VitePluginImportMapsStore {
-  readonly sharedDependencies: readonly string[] = [];
+  readonly sharedDependencies: ReadonlyArray<string> = [];
   readonly sharedOutDir: string = "shared";
   readonly log: boolean;
 
-  readonly importMapDependencies = new Map<string, RegisteredDependency>();
+  readonly importMapDependencies: Map<string, RegisteredDependency> = new Map();
 
   constructor(options: VitePluginImportMapsConfig) {
     this.sharedDependencies = [...new Set<string>(options.shared)];

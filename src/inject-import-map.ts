@@ -1,9 +1,9 @@
+import { pluginName } from "./config.js";
 import type { IndexHtmlTransformResult, Plugin } from "vite";
 import type {
   RegisteredDependency,
   VitePluginImportMapsStore,
 } from "./store.js";
-import { pluginName } from "./config.js";
 
 export function pluginImportMapsInject(
   store: VitePluginImportMapsStore,
