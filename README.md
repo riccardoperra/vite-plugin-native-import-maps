@@ -1,7 +1,8 @@
 # vite-plugin-native-import-maps
 
 A vite plugin that automatically
-manages browser [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)
+manages
+browser [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)
 in your
 host vite application.
 
@@ -36,9 +37,10 @@ At the same time, relying on services like [esm.sh] or [jspm.io] can be limiting
 packages (and their entire dependency trees)
 from their own networks, which might not align with your expectations.
 
-This plugin directly integrates into the vite build system, so it just exposed via import maps the modules you defined
-in configuration, while assuring even your host application uses those chunks. This avoids duplicating
-instances of the same library in your application, which is a common problem when using micro-frontend architectures.
+This plugin directly integrates into the vite build system, so it just exposed via import maps the modules (local files
+or vendors in node_modules are supported) you defined in configuration, while assuring even your host application uses
+those chunks. This avoids duplicating instances of the same library in your application, which is a common problem when
+using micro-frontend architectures.
 
 You can check a more detailed explanation in the [below paragraph](#how-the-heck-does-this-plugin-work),
 
@@ -57,12 +59,17 @@ yarn add -D vite-plugin-native-import-maps
 
 ```ts
 import {defineConfig} from "vite";
-import {vitePluginImportMaps} from "vite-plugin-native-import-maps";
+import {vitePluginNativeImportMaps} from "vite-plugin-native-import-maps";
 
 export default defineConfig({
     plugins: [
-        vitePluginImportMaps({
-            shared: ["react", "react-dom"],
+        vitePluginNativeImportMaps({
+            shared: [
+                "react",
+                "react-dom",
+                // Add an import map with a custom entry
+                {name: 'react/jsx-runtime', entry: './src/custom-jsx-runtime.ts'}
+            ],
             // optional settings
             sharedOutDir: "shared", // default: 'shared'
             log: true, // default: false
@@ -73,11 +80,11 @@ export default defineConfig({
 
 ## Configuration
 
-| Option         | Type       | Default | Description                                        |
-|----------------|------------|---------|----------------------------------------------------|
-| `shared`       | `string[]` |         | List of dependencies to be exposed via import maps |
-| `sharedOutDir` | `string`   | `''`    | Directory where shared chunks will be emitted      |
-| `log`          | `boolean`  | `false` | Enable some logs for debugging purposes            |
+| Option         | Type                                               | Default | Description                                        |
+|----------------|----------------------------------------------------|---------|----------------------------------------------------|
+| `shared`       | `Array<string \| { name: string, entry: string }>` |         | List of dependencies to be exposed via import maps |
+| `sharedOutDir` | `string`                                           | `''`    | Directory where shared chunks will be emitted      |
+| `log`          | `boolean`                                          | `false` | Enable some logs for debugging purposes            |
 
 ## How does this plugin work?
 
