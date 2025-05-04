@@ -55,7 +55,9 @@ export function pluginImportMapsDevelopmentEnv(
         resolvedModules = (
           await Promise.all(
             store.sharedDependencies.map(async (dependency) => {
-              const resolvedId = await pluginContainer.resolveId(dependency.entry);
+              const resolvedId = await pluginContainer.resolveId(
+                dependency.entry,
+              );
               if (!resolvedId) return null;
 
               const path = fileToUrl(resolvedId.id, config.root);
@@ -78,8 +80,8 @@ export function pluginImportMapsDevelopmentEnv(
       cachedResolvedModules = resolvedModules;
       latestBrowserHash = devOptimizer.metadata.browserHash;
 
-      for (const { path, name } of resolvedModules) {
-        store.addDependency({ packageName: name, url: path });
+      for (const { path: url, name: packageName } of resolvedModules) {
+        store.addDependency({ packageName, url });
       }
     },
   };

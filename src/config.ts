@@ -20,10 +20,12 @@ export function pluginName(name: string) {
   return `${PLUGIN_NAME}:${name}`;
 }
 
-export type SharedDependencyConfig = Array<string | { name: string, entry: string }>;
+export type SharedDependencyConfig = Array<
+  string | { name: string; entry: string }
+>;
 
 export interface ImportMapsBuildOptions {
-  strategy?: 'virtual-modules' | 'entry-as-input';
+  strategy?: "virtual-modules" | "entry-as-input";
 }
 
 export interface VitePluginImportMapsConfig {
@@ -45,4 +47,10 @@ export interface VitePluginImportMapsConfig {
    * Custom options for plugin processing during build
    */
   buildOptions?: ImportMapsBuildOptions;
+  /**
+   * Transform the resolved import map `imports` before writing it to the HTML file
+   */
+  importMapHtmlTransformer?: (
+    importMap: Record<string, string>,
+  ) => Record<string, string>;
 }
