@@ -37,18 +37,13 @@ export class VitePluginImportMapsStore {
   readonly sharedDependencies: ReadonlyArray<NormalizedDependencyInput> = [];
   readonly sharedOutDir: string = "";
   readonly log: boolean;
-
+  readonly importMapHtmlTransformer: (
+    imports: Record<string, any>,
+    entries: Map<string, RegisteredDependency>,
+  ) => Record<string, any> = (imports) => imports;
   readonly importMapDependencies: Map<string, RegisteredDependency> = new Map();
 
   readonly inputs: ReadonlyArray<ImportMapBuildChunkEntrypoint> = [];
-
-  get inputsMap() {
-    return Object.fromEntries(
-      Object.entries(
-        this.inputs.map((input) => [input.normalizedDependencyName, input]),
-      ),
-    );
-  }
 
   constructor(options: VitePluginImportMapsConfig) {
     this.sharedDependencies = [
@@ -57,6 +52,9 @@ export class VitePluginImportMapsStore {
     this.log = options.log || false;
     if (options.sharedOutDir) {
       this.sharedOutDir = options.sharedOutDir;
+    }
+    if (options.importMapHtmlTransformer) {
+      this.importMapHtmlTransformer = options.importMapHtmlTransformer;
     }
   }
 

@@ -1,9 +1,6 @@
 import { pluginName } from "./config.js";
-import type { IndexHtmlTransformResult, Plugin } from "vite";
-import type {
-  RegisteredDependency,
-  VitePluginImportMapsStore,
-} from "./store.js";
+import type { Plugin } from "vite";
+import type { VitePluginImportMapsStore } from "./store.js";
 
 export function pluginImportMapsInject(
   store: VitePluginImportMapsStore,
@@ -12,29 +9,27 @@ export function pluginImportMapsInject(
   return {
     name,
     transformIndexHtml(source) {
-      return generateHtmlTransformResult(source, store.importMapDependencies);
+      const imports = {} as Record<string, string>;
+      store.importMapDependencies.forEach((dep) => {
+        imports[dep.packageName] = dep.url;
+      });
+
+      const resolvedImports = store.importMapHtmlTransformer(
+        imports,
+        store.importMapDependencies
+      );
+
+      return {
+        html: source,
+        tags: [
+          {
+            tag: "script",
+            attrs: { type: "importmap" },
+            children: JSON.stringify({ imports: resolvedImports }),
+            injectTo: "head-prepend",
+          },
+        ],
+      };
     },
-  };
-}
-
-function generateHtmlTransformResult(
-  source: string,
-  entries: Map<string, RegisteredDependency>,
-): IndexHtmlTransformResult {
-  const imports = {} as Record<string, string>;
-  entries.forEach((dep) => {
-    imports[dep.packageName] = dep.url;
-  });
-
-  return {
-    html: source,
-    tags: [
-      {
-        tag: "script",
-        attrs: { type: "importmap" },
-        children: JSON.stringify({ imports }),
-        injectTo: "head-prepend",
-      },
-    ],
   };
 }
