@@ -18,6 +18,7 @@ import { VitePluginImportMapsStore } from "./store.js";
 import { pluginImportMapsBuildEnv } from "./build.js";
 import { pluginImportMapsInject } from "./inject-import-map.js";
 import { pluginImportMapsDevelopmentEnv } from "./development.js";
+import { pluginImportMapsBuildEnvVirtual } from "./build-virtual.js";
 import type { VitePluginImportMapsConfig } from "./config.js";
 import type { Plugin } from "vite";
 
@@ -28,7 +29,12 @@ export function vitePluginNativeImportMaps(
 
   const store = new VitePluginImportMapsStore(options);
 
-  plugins.push(pluginImportMapsBuildEnv(store));
+  if (options.buildOptions?.strategy === "virtual-modules") {
+    plugins.push(pluginImportMapsBuildEnvVirtual(store));
+  } else {
+    plugins.push(pluginImportMapsBuildEnv(store));
+  }
+
   plugins.push(pluginImportMapsDevelopmentEnv(store));
   plugins.push(pluginImportMapsInject(store));
 

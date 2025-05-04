@@ -22,6 +22,10 @@ export function pluginName(name: string) {
 
 export type SharedDependencyConfig = Array<string>;
 
+export interface ImportMapsBuildOptions {
+  strategy: 'virtual-modules' | 'entry-as-input';
+}
+
 export interface VitePluginImportMapsConfig {
   /**
    * Dependencies shared by modules
@@ -37,4 +41,8 @@ export interface VitePluginImportMapsConfig {
    * Enable logging
    */
   log?: boolean;
+  /**
+   * Custom options for plugin processing during build
+   */
+  buildOptions?: ImportMapsBuildOptions;
 }
