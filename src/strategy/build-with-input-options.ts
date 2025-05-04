@@ -49,7 +49,7 @@ export function buildWithInputOptions(store: VitePluginImportMapsStore): Plugin 
       }
       for (const input of store.inputs) {
         config.build.rollupOptions.input[input.entrypoint] =
-          input.originalDependencyName;
+          input.idToResolve;
       }
     },
     configResolved(resolvedConfig) {

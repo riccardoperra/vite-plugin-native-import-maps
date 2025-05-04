@@ -20,7 +20,7 @@ export function pluginName(name: string) {
   return `${PLUGIN_NAME}:${name}`;
 }
 
-export type SharedDependencyConfig = Array<string>;
+export type SharedDependencyConfig = Array<string | { name: string, entry: string }>;
 
 export interface ImportMapsBuildOptions {
   strategy?: 'virtual-modules' | 'entry-as-input';

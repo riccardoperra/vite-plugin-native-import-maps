@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
+import path from "node:path";
 import { pluginName } from "../config.js";
-import type { VitePluginImportMapsStore } from "../store.js";
+import type {
+  ImportMapBuildChunkEntrypoint,
+  VitePluginImportMapsStore,
+} from "../store.js";
 import type { Plugin, ResolvedConfig } from "vite";
 
-interface ImportMapChunkEntrypoint {
-  originalDependencyName: string;
-  normalizedDependencyName: string;
-  entrypoint: string;
-}
+const VIRTUAL_ID_PREFIX = `\0virtual:import-map-chunk`;
 
 function getVirtualFileName(name: string) {
-  return `\0virtual:import-map-chunk/${name}`;
+  return `${VIRTUAL_ID_PREFIX}/${name}`;
 }
 
-export function buildWithVirtual(
-  store: VitePluginImportMapsStore,
-): Plugin {
-  const inputs: Array<ImportMapChunkEntrypoint> = [];
+export function buildWithVirtual(store: VitePluginImportMapsStore): Plugin {
   const name = pluginName("build:virtual");
-  const virtualModules = new Map<string, ImportMapChunkEntrypoint>();
+  const virtualModules = new Map<string, ImportMapBuildChunkEntrypoint>();
+  const localModules = new Map<string, ImportMapBuildChunkEntrypoint>();
   let config!: ResolvedConfig;
 
   return {
@@ -50,8 +48,7 @@ export function buildWithVirtual(
     async load(id) {
       const chunk = virtualModules.get(id);
       if (!chunk) return;
-
-      const resolvedId = await this.resolve(chunk.originalDependencyName);
+      const resolvedId = await this.resolve(chunk.idToResolve);
       if (!resolvedId) return;
       let hasDefaultExport = false;
 
@@ -97,15 +94,29 @@ export function buildWithVirtual(
       };
     },
     buildStart() {
-      for (const input of inputs) {
-        const id = getVirtualFileName(input.normalizedDependencyName);
-        virtualModules.set(id, input);
-        this.emitFile({
-          type: "chunk",
-          name: input.entrypoint,
-          id,
-          preserveSignature: "strict",
-        });
+      for (const input of store.inputs) {
+        if (input.localFile) {
+          // a local file doesn't have to be handled like a virtual
+          // since I expect their source is already correct and doesn't
+          // need to be transformed
+          const id = path.resolve(input.idToResolve);
+          this.emitFile({
+            type: "chunk",
+            name: input.entrypoint,
+            id,
+            preserveSignature: "strict",
+          });
+          localModules.set(id, input);
+        } else {
+          const id = getVirtualFileName(input.normalizedDependencyName);
+          virtualModules.set(id, input);
+          this.emitFile({
+            type: "chunk",
+            name: input.entrypoint,
+            id,
+            preserveSignature: "strict",
+          });
+        }
       }
     },
     // We'll get here the final name of the generated chunk
@@ -116,16 +127,27 @@ export function buildWithVirtual(
       const keys = Object.keys(bundle);
       for (const key of keys) {
         const entry = bundle[key];
-        if (entry.type !== "chunk" || !entry.facadeModuleId) continue;
-        const entryImportMap = virtualModules.get(entry.facadeModuleId);
-        if (!entryImportMap) continue;
+        if (entry.type !== "chunk") continue;
 
-        const url = `./${entry.fileName}`,
-          packageName = entryImportMap.originalDependencyName;
-        store.addDependency({ url, packageName });
-        config.logger.info(`[${name}] Added ${packageName}: ${url}`, {
-          timestamp: true,
-        });
+        const handledModules = new Map([
+          ...virtualModules.entries(),
+          ...localModules.entries(),
+        ]);
+
+        if (
+          entry.facadeModuleId &&
+          (entry.facadeModuleId.startsWith(VIRTUAL_ID_PREFIX) ||
+            path.isAbsolute(entry.facadeModuleId))
+        ) {
+          const entryImportMap = handledModules.get(entry.facadeModuleId);
+          if (!entryImportMap) continue;
+          const url = `./${entry.fileName}`,
+            packageName = entryImportMap.originalDependencyName;
+          store.addDependency({ url, packageName });
+          config.logger.info(`[${name}] Added ${packageName}: ${url}`, {
+            timestamp: true,
+          });
+        }
       }
     },
   };
