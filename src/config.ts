@@ -23,7 +23,7 @@ export function pluginName(name: string) {
 export type SharedDependencyConfig = Array<string>;
 
 export interface ImportMapsBuildOptions {
-  strategy: 'virtual-modules' | 'entry-as-input';
+  strategy?: 'virtual-modules' | 'entry-as-input';
 }
 
 export interface VitePluginImportMapsConfig {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { pluginName } from "./config.js";
-import type { VitePluginImportMapsStore } from "./store.js";
+import { pluginName } from "../config.js";
+import type { VitePluginImportMapsBuildStore } from "../store.js";
 import type { Plugin, ResolvedConfig } from "vite";
 
 interface ImportMapChunkEntrypoint {
@@ -28,24 +28,13 @@ function getVirtualFileName(name: string) {
   return `\0virtual:import-map-chunk/${name}`;
 }
 
-export function pluginImportMapsBuildEnvVirtual(
-  store: VitePluginImportMapsStore,
+export function buildWithVirtual(
+  store: VitePluginImportMapsBuildStore,
 ): Plugin {
   const inputs: Array<ImportMapChunkEntrypoint> = [];
-  const name = pluginName("build");
+  const name = pluginName("build:virtual");
   const virtualModules = new Map<string, ImportMapChunkEntrypoint>();
   let config!: ResolvedConfig;
-
-  for (const dep of store.sharedDependencies) {
-    const normalizedDepName = store.getNormalizedDependencyName(dep);
-    const entrypoint = store.getEntrypointPath(normalizedDepName);
-
-    inputs.push({
-      originalDependencyName: dep,
-      entrypoint,
-      normalizedDependencyName: normalizedDepName,
-    });
-  }
 
   return {
     name,

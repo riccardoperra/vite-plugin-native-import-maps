@@ -30,6 +30,8 @@ export class VitePluginImportMapsStore {
 
   readonly importMapDependencies: Map<string, RegisteredDependency> = new Map();
 
+  readonly inputs: ReadonlyArray<ImportMapBuildChunkEntrypoint> = [];
+
   constructor(options: VitePluginImportMapsConfig) {
     this.sharedDependencies = [...new Set<string>(options.shared)];
     this.log = options.log || false;
@@ -53,4 +55,25 @@ export class VitePluginImportMapsStore {
   getEntrypointPath(entrypoint: string): string {
     return path.join(this.sharedOutDir, entrypoint);
   }
+
+  addInput(dependency: string) {
+    const normalizedDepName = this.getNormalizedDependencyName(dependency);
+    const entrypoint = this.getEntrypointPath(normalizedDepName);
+
+    const meta = {
+      originalDependencyName: dependency,
+      entrypoint,
+      normalizedDependencyName: normalizedDepName,
+    } satisfies ImportMapBuildChunkEntrypoint;
+
+    (this.inputs as Array<ImportMapBuildChunkEntrypoint>).push(meta);
+
+    return meta;
+  }
+}
+
+export interface ImportMapBuildChunkEntrypoint {
+  originalDependencyName: string;
+  normalizedDependencyName: string;
+  entrypoint: string;
 }

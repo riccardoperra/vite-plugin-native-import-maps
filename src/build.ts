@@ -14,90 +14,31 @@
  * limitations under the License.
  */
 
-import { pluginName } from "./config.js";
-import { errorFactory } from "./utils.js";
-import type { VitePluginImportMapsStore } from "./store.js";
-import type { Plugin, ResolvedConfig } from "vite";
-
-interface ImportMapChunkEntrypoint {
-  originalDependencyName: string;
-  normalizedDependencyName: string;
-  entrypoint: string;
-}
+import { buildWithInputOptions } from "./strategy/build-with-input-options.js";
+import { buildWithVirtual } from "./strategy/build-virtual.js";
+import type { Plugin } from "vite";
+import type { ImportMapsBuildOptions } from "./config.js";
+import type { VitePluginImportMapsBuildStore } from "./store.js";
 
 export function pluginImportMapsBuildEnv(
-  store: VitePluginImportMapsStore,
-): Plugin {
-  const inputEntrypointToDependencyMap = new Map<string, string>();
-  const inputs: Array<ImportMapChunkEntrypoint> = [];
-  const name = pluginName("build");
-  const getError = errorFactory(name);
-  let config!: ResolvedConfig;
-  return {
-    name,
-    apply: "build",
-    config(config) {
-      for (const dep of store.sharedDependencies) {
-        const normalizedDepName = store.getNormalizedDependencyName(dep);
-        const entrypoint = store.getEntrypointPath(normalizedDepName);
+  store: VitePluginImportMapsBuildStore,
+  buildOptions: ImportMapsBuildOptions,
+): Array<Plugin> {
+  const plugins: Array<Plugin> = [];
 
-        inputs.push({
-          originalDependencyName: dep,
-          entrypoint,
-          normalizedDependencyName: normalizedDepName,
-        });
-
-        inputEntrypointToDependencyMap.set(entrypoint, dep);
-      }
-
-      if (!config.build) config.build = {};
-      if (!config.build.rollupOptions) config.build.rollupOptions = {};
-      if (!config.build.rollupOptions.input)
-        config.build.rollupOptions.input = {};
-
-      config.build.rollupOptions.preserveEntrySignatures = "strict";
-
-      // Currently supporting only input options as an object
-      if (
-        typeof config.build.rollupOptions.input === "string" ||
-        Array.isArray(config.build.rollupOptions.input)
-      ) {
-        throw getError("Input options must be an object");
-      }
-      for (const input of inputs) {
-        config.build.rollupOptions.input[input.entrypoint] =
-          input.originalDependencyName;
-      }
-    },
-    configResolved(resolvedConfig) {
-      config = resolvedConfig;
-    },
-    // We'll get here the final name of the generated chunk
-    // to track the import-maps dependencies
-    generateBundle(_, bundle) {
-      store.clearDependencies();
-
-      const keys = Object.keys(bundle);
-      for (const key of keys) {
-        const entry = bundle[key];
-        if (entry.type !== "chunk") continue;
-
-        if (inputEntrypointToDependencyMap.has(entry.name)) {
-          const entryPath = inputEntrypointToDependencyMap.get(entry.name);
-          if (entryPath) {
-            const packageName = entryPath;
-            const url = "./" + entry.fileName;
-            store.addDependency({
-              url,
-              packageName,
-            });
-
-            config.logger.info(`[${name}] Added ${packageName}: ${url}`, {
-              timestamp: true,
-            });
-          }
-        }
-      }
-    },
+  const resolvedBuildOptions: Required<ImportMapsBuildOptions> = {
+    strategy: buildOptions.strategy ?? "entry-as-input",
   };
+
+  for (const dep of store.sharedDependencies) {
+    store.addInput(dep);
+  }
+
+  if (resolvedBuildOptions.strategy === "entry-as-input") {
+    plugins.push(buildWithInputOptions(store));
+  } else {
+    plugins.push(buildWithVirtual(store));
+  }
+
+  return plugins;
 }
