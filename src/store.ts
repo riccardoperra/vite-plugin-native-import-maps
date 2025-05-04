@@ -16,26 +16,61 @@
 
 import path from "node:path";
 import { normalizeDependencyName } from "./utils.js";
-import type { VitePluginImportMapsConfig } from "./config.js";
+import type {
+  SharedDependencyConfig,
+  VitePluginImportMapsConfig,
+} from "./config.js";
 
 export interface RegisteredDependency {
   packageName: string;
   url: string;
 }
 
+export interface NormalizedDependencyInput {
+  name: string;
+  entry: string;
+
+  localFile: boolean;
+}
+
 export class VitePluginImportMapsStore {
-  readonly sharedDependencies: ReadonlyArray<string> = [];
+  readonly sharedDependencies: ReadonlyArray<NormalizedDependencyInput> = [];
   readonly sharedOutDir: string = "";
   readonly log: boolean;
 
   readonly importMapDependencies: Map<string, RegisteredDependency> = new Map();
 
+  readonly inputs: ReadonlyArray<ImportMapBuildChunkEntrypoint> = [];
+
+  get inputsMap() {
+    return Object.fromEntries(
+      Object.entries(
+        this.inputs.map((input) => [input.normalizedDependencyName, input]),
+      ),
+    );
+  }
+
   constructor(options: VitePluginImportMapsConfig) {
-    this.sharedDependencies = [...new Set<string>(options.shared)];
+    this.sharedDependencies = [
+      ...options.shared.map(this.normalizeDependencyInput),
+    ];
     this.log = options.log || false;
     if (options.sharedOutDir) {
       this.sharedOutDir = options.sharedOutDir;
     }
+  }
+
+  private normalizeDependencyInput(
+    entry: SharedDependencyConfig[number],
+  ): NormalizedDependencyInput {
+    if (typeof entry === "string") {
+      return { name: entry, entry: entry, localFile: false };
+    }
+    return {
+      name: entry.name,
+      entry: entry.entry,
+      localFile: entry.entry.includes("."),
+    };
   }
 
   clearDependencies(): void {
@@ -53,4 +88,30 @@ export class VitePluginImportMapsStore {
   getEntrypointPath(entrypoint: string): string {
     return path.join(this.sharedOutDir, entrypoint);
   }
+
+  addInput(input: NormalizedDependencyInput) {
+    const dependency = input.name;
+    const normalizedDepName = this.getNormalizedDependencyName(dependency);
+    const entrypoint = this.getEntrypointPath(normalizedDepName);
+
+    const meta = {
+      originalDependencyName: dependency,
+      entrypoint,
+      normalizedDependencyName: normalizedDepName,
+      idToResolve: input.entry,
+      localFile: input.localFile,
+    } satisfies ImportMapBuildChunkEntrypoint;
+
+    (this.inputs as Array<ImportMapBuildChunkEntrypoint>).push(meta);
+
+    return meta;
+  }
+}
+
+export interface ImportMapBuildChunkEntrypoint {
+  originalDependencyName: string;
+  normalizedDependencyName: string;
+  entrypoint: string;
+  idToResolve: string;
+  localFile: boolean;
 }

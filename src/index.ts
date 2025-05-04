@@ -28,7 +28,7 @@ export function vitePluginNativeImportMaps(
 
   const store = new VitePluginImportMapsStore(options);
 
-  plugins.push(pluginImportMapsBuildEnv(store));
+  plugins.push(...pluginImportMapsBuildEnv(store, options.buildOptions ?? {}));
   plugins.push(pluginImportMapsDevelopmentEnv(store));
   plugins.push(pluginImportMapsInject(store));
 

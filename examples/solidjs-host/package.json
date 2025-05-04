@@ -6,7 +6,7 @@
   "scripts": {
     "prebuild": "pnpm --filter=solidjs-remote-counter build",
     "dev": "pnpm prebuild && vite",
-    "build": "pnpm prebuild && tsc -b && vite build",
+    "build": "pnpm prebuild && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

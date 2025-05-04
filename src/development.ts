@@ -55,7 +55,7 @@ export function pluginImportMapsDevelopmentEnv(
         resolvedModules = (
           await Promise.all(
             store.sharedDependencies.map(async (dependency) => {
-              const resolvedId = await pluginContainer.resolveId(dependency);
+              const resolvedId = await pluginContainer.resolveId(dependency.entry);
               if (!resolvedId) return null;
 
               const path = fileToUrl(resolvedId.id, config.root);
@@ -67,7 +67,7 @@ export function pluginImportMapsDevelopmentEnv(
                 );
 
               return {
-                name: dependency,
+                name: dependency.name,
                 path,
               };
             }),
