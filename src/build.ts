@@ -18,10 +18,10 @@ import { buildWithInputOptions } from "./strategy/build-with-input-options.js";
 import { buildWithVirtual } from "./strategy/build-virtual.js";
 import type { Plugin } from "vite";
 import type { ImportMapsBuildOptions } from "./config.js";
-import type { VitePluginImportMapsBuildStore } from "./store.js";
+import type { VitePluginImportMapsStore } from "./store.js";
 
 export function pluginImportMapsBuildEnv(
-  store: VitePluginImportMapsBuildStore,
+  store: VitePluginImportMapsStore,
   buildOptions: ImportMapsBuildOptions,
 ): Array<Plugin> {
   const plugins: Array<Plugin> = [];

@@ -17,9 +17,9 @@
 import { pluginName } from "../config.js";
 import { errorFactory } from "../utils.js";
 import type { Plugin, ResolvedConfig } from "vite";
-import type { VitePluginImportMapsBuildStore } from "../store.js";
+import type { VitePluginImportMapsStore } from "../store.js";
 
-export function buildWithInputOptions(store: VitePluginImportMapsBuildStore): Plugin {
+export function buildWithInputOptions(store: VitePluginImportMapsStore): Plugin {
   const name = pluginName("build:config-input-options");
   const getError = errorFactory(name);
   let config!: ResolvedConfig;

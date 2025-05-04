@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { VitePluginImportMapsBuildStore } from "./store.js";
+import { VitePluginImportMapsStore } from "./store.js";
 import { pluginImportMapsBuildEnv } from "./build.js";
 import { pluginImportMapsInject } from "./inject-import-map.js";
 import { pluginImportMapsDevelopmentEnv } from "./development.js";
@@ -26,7 +26,7 @@ export function vitePluginNativeImportMaps(
 ): Array<Plugin> {
   const plugins: Array<Plugin> = [];
 
-  const store = new VitePluginImportMapsBuildStore(options);
+  const store = new VitePluginImportMapsStore(options);
 
   plugins.push(...pluginImportMapsBuildEnv(store, options.buildOptions ?? {}));
   plugins.push(pluginImportMapsDevelopmentEnv(store));

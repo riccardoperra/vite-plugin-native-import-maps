@@ -15,7 +15,7 @@
  */
 
 import { pluginName } from "../config.js";
-import type { VitePluginImportMapsBuildStore } from "../store.js";
+import type { VitePluginImportMapsStore } from "../store.js";
 import type { Plugin, ResolvedConfig } from "vite";
 
 interface ImportMapChunkEntrypoint {
@@ -29,7 +29,7 @@ function getVirtualFileName(name: string) {
 }
 
 export function buildWithVirtual(
-  store: VitePluginImportMapsBuildStore,
+  store: VitePluginImportMapsStore,
 ): Plugin {
   const inputs: Array<ImportMapChunkEntrypoint> = [];
   const name = pluginName("build:virtual");
