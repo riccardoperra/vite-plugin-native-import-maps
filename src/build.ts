@@ -37,7 +37,7 @@ export function pluginImportMapsBuildEnv(
   if (resolvedBuildOptions.strategy === "entry-as-input") {
     plugins.push(buildWithInputOptions(store));
   } else {
-    plugins.push(buildWithVirtual(store));
+    plugins.push(...buildWithVirtual(store));
   }
 
   return plugins;
