@@ -1,4 +1,4 @@
-# vite-plugin-native-import-maps\
+# vite-plugin-native-import-maps
 
 > [!CAUTION]
 >
