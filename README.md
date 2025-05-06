@@ -3,7 +3,7 @@
 > [!CAUTION]
 >
 > **This Vite plugin is currently in active development.**
-> The API and internal behavior may change without notice. 
+> The API and internal behavior may change without notice.
 > Use at your own risk and keep an eye on updates.
 
 A vite plugin that automatically
@@ -25,30 +25,61 @@ always pointing to an existing chunk of your application, avoiding duplicating i
 
 ## Do you need this plugin?
 
-If you wanted to
-use [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap),
-you're likely working with a micro-frontend architecture or an application that uses a plugin system,
-where sharing dependencies between different modules at runtime is essential.
+If you're considering
+using [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap),
+you're likely working with a micro-frontend architecture or an application that uses a plugin system, where including
+remote modules and sharing dependencies between different modules at runtime is essential.
 
-While @module-federation/vite offers a full-featured module federation system, it may be a bloated solution for your
-problem.
+While tools like [Module Federation](https://module-federation.io/ ) provide full-featured module federation
+capabilities, they can be overkill for your use cases. To use module federation, you typically need to follow its
+conventions and tooling—setting up the appropriate plugins and adhering to its runtime expectations.
+Although it's possible to use the federation runtime independently, doing so effectively requires a tightly integrated
+ecosystem that fully supports its model.
 
-Native import maps allow the browser to resolve modules directly, giving you control over dependency management.
-This means that you can build your external modules independently **without forcing to use any specific bundler or
-plugin**
-to integrate them (e.g., module federation plugins).
-You only need to write ES Modules that actually import those dependencies if you want to reuse the same chunks.
+### Why not import maps?
 
-At the same time, relying on services like [esm.sh] or [jspm.io] can be limiting, since they require downloading
-packages (and their entire dependency trees)
+[Import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) are a
+browser standard that allows developers to control how the browser resolves module specifiers.
+They provide a mapping between module names and their actual locations, enabling more flexible module imports without
+having to specify full paths.
+
+```html
+
+<script type="importmap">
+    {
+        "imports": {
+            "react": "/shared/react.js",
+        }
+    }
+</script>
+```
+
+```javascript
+// Without import maps
+import React from '/shared/react.js';
+
+// With import maps
+import React from 'react';
+```
+
+However, setting them up manually is often cumbersome—especially when dealing with external CDNs or when you’re forced
+to manage static assets by hand.
+
+Relying on services like [esm.sh] or [jspm.io] can be limiting, since they require downloading packages (and their
+entire dependency trees)
 from their own networks, which might not align with your expectations.
 
-This plugin directly integrates into the vite build system, so it just exposed via import maps the modules (local files
-or vendors in node_modules are supported) you defined in configuration, while assuring even your host application uses
-those chunks. This avoids duplicating instances of the same library in your application, which is a common problem when
-using micro-frontend architectures.
+For example, what if you want to expose only some modules or a modified version of a library, or just a local file that
+could be used by a remote-loaded module?
 
-You can check a more detailed explanation in the [below paragraph](#how-the-heck-does-this-plugin-work),
+This plugin integrates import maps with Vite's build system to seamlessly expose entrypoints from your application or
+installed dependencies,
+which are built as a separate chunk. It works in **both development and production modes**, and ensures that
+shared modules are bundled into proper chunks and referenced consistently, so even your host application uses the exact
+same instances. This avoids issues like module duplication and helps maintain a clean, predictable module graph—without
+having to serve assets externally or manage URLs manually.
+
+For more technical insight, see the [detailed explainatino below](#how-does-this-plugin-work),
 
 ## Installation
 
