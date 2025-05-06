@@ -18,6 +18,7 @@ import { VitePluginImportMapsStore } from "./store.js";
 import { pluginImportMapsBuildEnv } from "./build.js";
 import { pluginImportMapsInject } from "./inject-import-map.js";
 import { pluginImportMapsDevelopmentEnv } from "./development.js";
+import { pluginImportMapsAsFile } from "./import-maps-as-file.js";
 import type { VitePluginImportMapsConfig } from "./config.js";
 import type { Plugin } from "vite";
 
@@ -31,6 +32,17 @@ export function vitePluginNativeImportMaps(
   plugins.push(...pluginImportMapsBuildEnv(store, options.buildOptions ?? {}));
   plugins.push(pluginImportMapsDevelopmentEnv(store));
   plugins.push(pluginImportMapsInject(store));
+
+  if (options.outputAsFile) {
+    plugins.push(
+      pluginImportMapsAsFile(store, {
+        name:
+          typeof options.outputAsFile === "string"
+            ? options.outputAsFile
+            : undefined,
+      }),
+    );
+  }
 
   return plugins;
 }

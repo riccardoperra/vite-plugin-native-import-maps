@@ -36,7 +36,7 @@ export interface VitePluginImportMapsConfig {
   /**
    * Directory where the shared chunks are stored
    *
-   * @default "shared"
+   * @default ""
    */
   sharedOutDir?: string;
   /**
@@ -53,4 +53,13 @@ export interface VitePluginImportMapsConfig {
   importMapHtmlTransformer?: (
     importMap: Record<string, string>,
   ) => Record<string, string>;
+  /**
+   * Whether to generate an import file.
+   *
+   * If a string is provided, it will be used as the output file name. Default as 'import-map.json'.
+   *
+   * Output file will be generated in the root directory of your generated bundle and will be
+   * available also in development mode via the Vite Dev Server.
+   */
+  outputAsFile?: boolean | string;
 }

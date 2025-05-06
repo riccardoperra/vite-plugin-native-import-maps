@@ -16,10 +16,7 @@
 
 import path from "node:path";
 import { normalizeDependencyName } from "./utils.js";
-import type {
-  SharedDependencyConfig,
-  VitePluginImportMapsConfig,
-} from "./config.js";
+import type { SharedDependencyConfig, VitePluginImportMapsConfig } from "./config.js";
 
 export interface RegisteredDependency {
   packageName: string;
@@ -103,6 +100,22 @@ export class VitePluginImportMapsStore {
     (this.inputs as Array<ImportMapBuildChunkEntrypoint>).push(meta);
 
     return meta;
+  }
+
+  getImportMapAsJson(): Record<string, any> {
+    const imports = {} as Record<string, string>;
+    this.importMapDependencies.forEach((dep) => {
+      imports[dep.packageName] = dep.url;
+    });
+
+    const resolvedImports = this.importMapHtmlTransformer(
+      imports,
+      this.importMapDependencies
+    );
+
+    return {
+      imports: resolvedImports
+    }
   }
 }
 
