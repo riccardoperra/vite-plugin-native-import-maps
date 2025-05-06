@@ -1,4 +1,10 @@
-# vite-plugin-native-import-maps
+# vite-plugin-native-import-maps\
+
+> [!CAUTION]
+>
+> **This Vite plugin is currently in active development.**
+> The API and internal behavior may change without notice. 
+> Use at your own risk and keep an eye on updates.
 
 A vite plugin that automatically
 manages
